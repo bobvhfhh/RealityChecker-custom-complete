@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"RealityChecker/internal/ui"
+	"RealityScout/internal/ui"
 )
 
 // executeCSV 从CSV文件批量检测域名
