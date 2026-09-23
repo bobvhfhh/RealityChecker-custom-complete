@@ -34,6 +34,7 @@ func (r *RootCmd) executeCSV(csvFile string) {
 
 	// 解析CSV
 	reader := csv.NewReader(file)
+	reader.FieldsPerRecord = -1
 	records, err := reader.ReadAll()
 	if err != nil {
 		ui.PrintErrorWithDetails(
@@ -86,35 +87,61 @@ func (r *RootCmd) executeCSV(csvFile string) {
 // extractDomainsFromCSV 从CSV记录中提取域名
 func extractDomainsFromCSV(records [][]string) []string {
 	var domains []string
-	domainSet := make(map[string]bool) // 用于去重
-
-	// 跳过标题行，从第二行开始处理
+	domainSet := make(map[string]bool)
+	if len(records) < 2 {
+		return domains
+	}
+	domainIndex, ok := findColumnIndex(records[0], "CERT_DOMAIN")
+	if !ok {
+		return domains
+	}
+	expectedFields := len(records[0])
 	for i := 1; i < len(records); i++ {
-		if len(records[i]) < 3 {
+		row, ok := normalizeCSVRow(records[i], domainIndex, expectedFields)
+		if !ok {
 			continue
 		}
-
-		certDomain := strings.TrimSpace(records[i][2]) // CERT_DOMAIN列
+		certDomain := strings.TrimSpace(row[domainIndex])
 		if certDomain == "" {
 			continue
 		}
-
-		// 清理域名（移除引号等）
-		certDomain = strings.Trim(certDomain, "\"")
-
-		// 排除一些不需要的域名
+		certDomain = strings.Trim(certDomain, string([]byte{34}))
 		if shouldExcludeDomain(certDomain) {
 			continue
 		}
-
-		// 去重
 		if !domainSet[certDomain] {
 			domains = append(domains, certDomain)
 			domainSet[certDomain] = true
 		}
 	}
-
 	return domains
+}
+
+func findColumnIndex(header []string, name string) (int, bool) {
+	for i, column := range header {
+		column = strings.TrimSpace(strings.TrimPrefix(column, "\ufeff"))
+		if strings.EqualFold(column, name) {
+			return i, true
+		}
+	}
+	return -1, false
+}
+
+func normalizeCSVRow(row []string, domainIndex, expectedFields int) ([]string, bool) {
+	if len(row) == expectedFields {
+		return row, true
+	}
+	if len(row) < expectedFields || domainIndex >= len(row) {
+		return nil, false
+	}
+	end := len(row) - (expectedFields - domainIndex - 1)
+	if end <= domainIndex || end > len(row) {
+		return nil, false
+	}
+	merged := append([]string{}, row[:domainIndex]...)
+	merged = append(merged, strings.Join(row[domainIndex:end], ","))
+	merged = append(merged, row[end:]...)
+	return merged, len(merged) == expectedFields
 }
 
 // shouldExcludeDomain 判断是否应该排除某个域名
