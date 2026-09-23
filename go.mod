@@ -1,4 +1,4 @@
-module RealityChecker
+module RealityScout
 
 go 1.21
 
