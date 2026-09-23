@@ -1,114 +1,198 @@
-# RealityChecker
+## 本二改版本与原项目的区别
 
-RealityChecker 是一个用于评估 Reality 协议目标域名的命令行工具。它支持单域名、批量域名和 RealiTLScanner CSV 批量检测。
+本仓库基于 [V2RaySSR/RealityChecker](https://github.com/V2RaySSR/RealityChecker) 二次修改，检测核心逻辑保持不变，重点增强了 RealiTLScanner CSV 的兼容性。
 
-## 主要改进
+### 主要改进
 
-本版本兼容 RealiTLScanner 的原始 CSV 输出：
+- **按表头读取域名**：根据 `CERT_DOMAIN` 列定位域名，不再固定读取第三列，避免把 `TLS 1.3` 等字段误当成域名。
+- **兼容原始 CSV**：RealiTLScanner 生成的原始 CSV 可以直接交给 `reality-checker csv file.csv`，无需手工调整列顺序或使用额外包装脚本。
+- **异常行处理**：对域名中未正确引用的逗号尝试自动修复；无法可靠修复的行会跳过，并在终端显示修复/跳过数量。
+- **更稳健的表头识别**：支持大小写差异和 UTF-8 BOM。
+- **去重与错误提示**：自动去重域名；缺少 `CERT_DOMAIN` 时给出明确错误。
+- **保持上游功能**：TLS 1.3、X25519、HTTP/2、SNI、证书、CDN、GFWList、GeoIP、批量检测和报告逻辑均保持原项目设计。
 
-- 按 `CERT_DOMAIN` 表头定位域名列，不依赖固定列号；
-- 自动去重域名；
-- 兼容域名字段中未正确引用的逗号，并显示修复/跳过的异常行数量；
-- 支持带 UTF-8 BOM 的 CSV 表头；
-- 缺少 `CERT_DOMAIN` 时给出明确错误。
+因此，本版本的优势是：**保留原项目检测能力，同时让 RealiTLScanner 到 RealityChecker 的批量检测流程更直接、更适合重复使用和迁移到其他机器。**
 
-## Linux VPS 部署
+---
+# Reality协议目标网站检测工具
 
-### 方式一：使用 Release（推荐）
+一个专业的Reality协议目标网站检测工具，用于评估网站是否适合作为Reality协议的目标域名。
 
-从仓库的 [Releases](https://github.com/bobvhfhh/RealityChecker-custom-complete/releases) 下载对应架构的压缩包：
+[V2RaySSR综合网](https://v2rayssr.com)
 
-```bash
-# x86_64 / amd64
-wget -O reality-checker.zip https://github.com/bobvhfhh/RealityChecker-custom-complete/releases/latest/download/reality-checker-linux-amd64.zip
-unzip reality-checker.zip
-chmod +x reality-checker
-./reality-checker version
-```
+## ✨ 功能特性
 
-ARM64 VPS 请下载 `reality-checker-linux-arm64.zip`。
+* **被墙检测** - 基于GFWList检测网站是否被墙
+* **地理位置检测** - 检测IP地理位置，国内网站直接终止
+* **TLS协议检测** - 检测TLS 1.3和X25519支持
+* **证书检测** - 检测证书有效性和SNI匹配
+* **CDN检测** - 智能检测CDN使用情况
+* **热门网站检测** - 检测是否为热门网站
+* **重定向检测** - 检测域名重定向
+* **批量检测** - 支持多域名并发检测，可与RealiTLScanner配合使用
+* **智能报告** - 生成详细的检测分析报告
 
-### 方式二：从源码编译
+## 📊 检测结果说明
 
-需要 Go 1.21 或更高版本：
+### 检测结果示例
 
-```bash
-git clone https://github.com/bobvhfhh/RealityChecker-custom-complete.git
-cd RealityChecker-custom-complete
-go build -o reality-checker .
-./reality-checker version
-```
-
-程序不是 Web 服务，不会监听端口，也不需要 Docker、systemd 或反向代理。
-
-## 使用方法
-
-### 单域名
+以下是一个批量检测的实际输出示例：
 
 ```bash
-./reality-checker check apple.com
-```
-
-### 多域名
-
-```bash
-./reality-checker batch apple.com tesla.com microsoft.com
-```
-
-### RealiTLScanner CSV
-
-先用 RealiTLScanner 生成 CSV：
-
-```bash
-./RealiTLScanner -addr <VPS IP> -port 443 -thread 100 -timeout 5 -out file1.csv
-```
-
-然后直接检测原始 CSV：
-
-```bash
-./reality-checker csv file1.csv
-./reality-checker csv file2.csv
-```
-
-不需要手工把 `CERT_DOMAIN` 移到第三列，也不需要额外的 `reality-check-csv` 包装脚本。文件名和目录可以任意，只要当前用户有读取权限。
-
-## 数据文件
-
-首次运行时，程序会检查 `data/` 目录中的 GeoIP、GFWList、CDN 关键词和热门网站数据；缺少时会尝试自动下载。不要把本地 CSV、扫描结果、数据库、缓存文件或编译后的二进制提交到 GitHub。
-
-## 从其他机器检测
-
-可以在本地运行 RealiTLScanner，把 CSV 上传到安装了 RealityChecker 的机器：
-
-```bash
-scp file2.csv user@server:/path/to/workdir/
-ssh user@server
-./reality-checker csv /path/to/workdir/file2.csv
-```
-
-也可以在另一台机器重新下载同一个 Release 或重新编译源码。
-
-## Windows / macOS
-
-```bash
-go build -o reality-checker .
 ./reality-checker csv file.csv
 ```
 
-Windows PowerShell：
+**实际运行效果：**
 
-```powershell
-go build -o reality-checker.exe .
-.\reality-checker.exe csv .\file.csv
-```
+![RealityChecker检测结果示例](RealityChecker.png)
 
-## 开发与测试
+**只有满足Reality目标域名硬性条件的（TLS1.3、X25519、H2、SNI匹配、证书有效），才会在列表中显示**
+
+### CDN检测等级说明
+
+| 等级 | 含义 | 影响 |
+|------|------|------|
+| **高** | 明确使用CDN | 可以使用，但不推荐 |
+| **中** | 疑似使用CDN | 可以使用，但不推荐 |
+| **低** | 轻微CDN特征 | 可以使用，但不推荐 |
+| **-** | 未检测到CDN | 可以使用，强烈推荐 |
+
+### 热门网站说明
+
+热门网站（如 apple.com、tesla.com、microsoft.com 等）由于使用人群多，容易被识别和封禁，因此不太推荐作为 Reality 协议的目标域名。
+
+**结果分析：**
+- 所有域名都支持TLS 1.3、X25519、HTTP/2和SNI匹配
+- 证书有效期充足
+- 部分使用了CDN且为热门网站
+- 部分虽然技术指标优秀，但由于CDN和热门网站特性，推荐度有所降低
+
+
+## 🚀 快速开始
+
+### 系统要求
+
+* **Linux VPS** - 主要针对VPS环境使用
+* **Windows、macOS** - 等自行编译
+* **Go 1.21+** - 用于本地编译（Windows、macOS可选）
+
+### 安装步骤
+
+**方法1：直接下载（推荐）**
+
+从 [Releases](https://github.com/bobvhfhh/RealityChecker-custom-complete/releases) 页面下载对应架构的zip文件：
 
 ```bash
-go test ./...
-gofmt -w internal/cmd/csv.go internal/cmd/csv_test.go
+# Linux x86_64
+wget https://github.com/bobvhfhh/RealityChecker-custom-complete/releases/latest/download/reality-checker-linux-amd64.zip
+
+# Linux ARM64
+wget https://github.com/bobvhfhh/RealityChecker-custom-complete/releases/latest/download/reality-checker-linux-arm64.zip
 ```
 
-## 免责声明
+解压后直接使用：
+```bash
+# 解压
+unzip reality-checker-linux-amd64.zip
 
-本工具仅用于技术研究和学习，请遵守当地法律法规以及目标网络的使用政策。
+# 添加执行权限
+chmod +x reality-checker
+
+# 开始检测
+./reality-checker check <域名>
+```
+
+**方法2：本地编译**
+
+```bash
+# 克隆项目
+git clone https://github.com/bobvhfhh/RealityChecker-custom-complete.git
+cd RealityChecker
+
+# 编译程序
+go build -o reality-checker
+
+# 开始检测
+./reality-checker check <域名>
+```
+
+## 🔍 使用示例
+
+### 单域名检测
+
+```bash
+# 基础检测
+./reality-checker check apple.com
+```
+
+### 批量检测
+
+```bash
+# 批量检测多个域名（空格分隔）
+./reality-checker batch apple.com tesla.com microsoft.com
+```
+
+### CSV文件检测
+
+```bash
+# 从CSV文件批量检测域名
+./reality-checker csv file.csv
+```
+
+### 推荐工作流程
+
+对于大量域名检测，建议配合使用 [RealiTLScanner](https://github.com/XTLS/RealiTLScanner) 工具（ [教程观看](https://www.youtube.com/watch?v=zE8CFQ6muUI) ）：
+
+**1. 使用RealiTLScanner扫描VPS IP：**
+```bash
+./RealiTLScanner -addr <VPS IP> -port 443 -thread 100 -timeout 5 -out file.csv
+```
+
+**2. 使用本工具检测生成的CSV文件：**
+```bash
+./reality-checker csv file.csv
+```
+
+**二改版本提示：**
+- 本版本可直接读取 RealiTLScanner 原始 CSV，不需要把 CERT_DOMAIN 移到第三列。
+- 对异常 CSV 行会显示自动修复和跳过数量。
+- RealiTLScanner 尽量在本地运行，不要在远端。
+- 多次运行时请更改输出文件名，如：`file1.csv`、`file2.csv`、`file3.csv` 等。
+
+**原项目提示：**
+- RealiTLScanner 尽量在本地运行，不要在远端
+- 多次运行RealiTLScanner时，请更改输出文件名，如：`file1.csv`、`file2.csv`、`file3.csv` 等
+- 如果使用相同的文件名，可能会导致文件导出失败或覆盖之前的扫描结果
+
+### 查看帮助
+
+```bash
+# 显示使用说明
+./reality-checker
+
+# 查看版本信息
+./reality-checker version
+```
+
+## 🔧常见问题
+
+**1. 数据文件下载失败**
+
+如果自动下载失败，请手动下载以下文件到 `data/` 目录：
+
+- [Country.mmdb](https://github.com/Loyalsoldier/geoip/releases/latest/download/Country.mmdb)
+- [gfwlist.conf](https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/gfw.txt)
+- [cdn_keywords.txt](https://raw.githubusercontent.com/V2RaySSR/RealityChecker/main/data/cdn_keywords.txt)
+- [hot_websites.txt](https://raw.githubusercontent.com/V2RaySSR/RealityChecker/main/data/hot_websites.txt)
+
+
+## 🏆 致谢
+
+感谢以下开源项目：
+
+* [Loyalsoldier/geoip](https://github.com/Loyalsoldier/geoip) - GeoIP数据库
+* [Loyalsoldier/clash-rules](https://github.com/Loyalsoldier/clash-rules) - GFW规则
+
+---
+
+**注意**: 本工具仅用于技术研究和学习目的，请遵守当地法律法规，合理使用网络资源。
