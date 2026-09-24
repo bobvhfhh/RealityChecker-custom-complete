@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"RealityChecker/internal/ui"
+	"RealityScout/internal/ui"
 )
 
 // executeBatch 执行批量检测

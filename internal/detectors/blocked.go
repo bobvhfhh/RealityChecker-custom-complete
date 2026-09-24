@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // BlockedStage 被墙检测阶段

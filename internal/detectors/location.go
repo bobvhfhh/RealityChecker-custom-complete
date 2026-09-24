@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 
 	"github.com/oschwald/geoip2-golang"
 )

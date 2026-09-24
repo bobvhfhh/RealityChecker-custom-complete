@@ -1,7 +1,7 @@
 package detectors
 
 import (
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // StatusCheckStage 状态码检查阶段

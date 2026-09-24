@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // CDNStage CDN检测阶段

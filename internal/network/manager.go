@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // ConnectionManager 连接管理器

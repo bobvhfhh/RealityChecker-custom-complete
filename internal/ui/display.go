@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"RealityChecker/internal/version"
+	"RealityScout/internal/version"
 )
 
 // GitHubRelease GitHub发布信息结构
@@ -20,14 +20,14 @@ type GitHubRelease struct {
 func PrintUsage() {
 	fmt.Printf("Reality协议目标网站检测器 %s\n\n", version.GetVersion())
 	fmt.Println("用法:")
-	fmt.Println("  reality-checker check <domain>          检测单个域名")
-	fmt.Println("  reality-checker batch <domain1> <domain2> <domain3> ...  批量检测域名")
-	fmt.Println("  reality-checker csv <csv_file>          从CSV文件批量检测域名")
+	fmt.Println("  reality-scout check <domain>          检测单个域名")
+	fmt.Println("  reality-scout batch <domain1> <domain2> <domain3> ...  批量检测域名")
+	fmt.Println("  reality-scout csv <csv_file>          从CSV文件批量检测域名")
 	fmt.Println("")
 	fmt.Println("示例:")
-	fmt.Println("  reality-checker check apple.com")
-	fmt.Println("  reality-checker batch apple.com tesla.com microsoft.com")
-	fmt.Println("  reality-checker csv file.csv")
+	fmt.Println("  reality-scout check apple.com")
+	fmt.Println("  reality-scout batch apple.com tesla.com microsoft.com")
+	fmt.Println("  reality-scout csv file.csv")
 }
 
 // PrintTimestampedMessage 打印带时间戳的消息
@@ -62,7 +62,7 @@ func getLatestVersion() string {
 	}
 
 	// 请求GitHub API
-	resp, err := client.Get("https://api.github.com/repos/V2RaySSR/RealityChecker/releases/latest")
+	resp, err := client.Get("https://api.github.com/repos/bobvhfhh/RealityScout/releases/latest")
 	if err != nil {
 		return "" // 网络错误时返回空字符串
 	}

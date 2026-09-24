@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"

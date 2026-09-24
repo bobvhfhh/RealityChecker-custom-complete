@@ -1,7 +1,7 @@
 package detectors
 
 import (
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // LocationCheckStage 地理位置检查阶段

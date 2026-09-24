@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"RealityChecker/internal/core"
-	"RealityChecker/internal/report"
-	"RealityChecker/internal/types"
+	"RealityScout/internal/core"
+	"RealityScout/internal/report"
+	"RealityScout/internal/types"
 )
 
 // Manager 批量管理器

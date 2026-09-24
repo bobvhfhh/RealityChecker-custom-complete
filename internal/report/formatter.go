@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // Formatter 报告格式化器

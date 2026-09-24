@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // RedirectStage 重定向检测阶段

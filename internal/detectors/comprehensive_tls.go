@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // ComprehensiveTLSStage 综合TLS检测阶段

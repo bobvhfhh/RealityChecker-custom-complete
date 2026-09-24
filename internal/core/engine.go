@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"RealityChecker/internal/network"
-	"RealityChecker/internal/types"
+	"RealityScout/internal/network"
+	"RealityScout/internal/types"
 )
 
 // Engine 主检测引擎（简化版本）

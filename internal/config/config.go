@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 
 	"gopkg.in/yaml.v3"
 )

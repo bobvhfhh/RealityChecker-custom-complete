@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"os"
 
-	"RealityChecker/internal/cmd"
-	"RealityChecker/internal/data"
-	"RealityChecker/internal/ui"
+	"RealityScout/internal/cmd"
+	"RealityScout/internal/data"
+	"RealityScout/internal/ui"
 )
 
 func main() {
 	// 首先显示横幅
 	ui.PrintBanner()
-	
+
 	// 检查并下载必要的数据文件
 	downloader := data.NewDownloader()
 	if err := downloader.EnsureDataFiles(); err != nil {
@@ -30,5 +30,3 @@ func main() {
 	// 执行命令
 	rootCmd.Execute()
 }
-
-

@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"RealityChecker/internal/detectors"
-	"RealityChecker/internal/network"
-	"RealityChecker/internal/types"
+	"RealityScout/internal/detectors"
+	"RealityScout/internal/network"
+	"RealityScout/internal/types"
 )
 
 // Pipeline 检测流水线

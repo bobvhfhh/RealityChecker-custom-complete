@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	"RealityChecker/internal/types"
+	"RealityScout/internal/types"
 )
 
 // IPResolverStage IP解析阶段

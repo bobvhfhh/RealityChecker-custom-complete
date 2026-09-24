@@ -6,9 +6,9 @@ import (
 	"regexp"
 	"strings"
 
-	"RealityChecker/internal/config"
-	"RealityChecker/internal/report"
-	"RealityChecker/internal/ui"
+	"RealityScout/internal/config"
+	"RealityScout/internal/report"
+	"RealityScout/internal/ui"
 )
 
 // executeCheck 执行单域名检测

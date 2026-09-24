@@ -1,22 +1,6 @@
-## 本二改版本与原项目的区别
+# Reality 协议目标网站检测工具
 
-本仓库基于 [V2RaySSR/RealityChecker](https://github.com/V2RaySSR/RealityChecker) 二次修改，检测核心逻辑保持不变，重点增强了 RealiTLScanner CSV 的兼容性。
-
-### 主要改进
-
-- **按表头读取域名**：根据 `CERT_DOMAIN` 列定位域名，不再固定读取第三列，避免把 `TLS 1.3` 等字段误当成域名。
-- **兼容原始 CSV**：RealiTLScanner 生成的原始 CSV 可以直接交给 `reality-checker csv file.csv`，无需手工调整列顺序或使用额外包装脚本。
-- **异常行处理**：对域名中未正确引用的逗号尝试自动修复；无法可靠修复的行会跳过，并在终端显示修复/跳过数量。
-- **更稳健的表头识别**：支持大小写差异和 UTF-8 BOM。
-- **去重与错误提示**：自动去重域名；缺少 `CERT_DOMAIN` 时给出明确错误。
-- **保持上游功能**：TLS 1.3、X25519、HTTP/2、SNI、证书、CDN、GFWList、GeoIP、批量检测和报告逻辑均保持原项目设计。
-
-因此，本版本的优势是：**保留原项目检测能力，同时让 RealiTLScanner 到 RealityChecker 的批量检测流程更直接、更适合重复使用和迁移到其他机器。**
-
----
-# Reality协议目标网站检测工具
-
-一个专业的Reality协议目标网站检测工具，用于评估网站是否适合作为Reality协议的目标域名。
+一个专业的Reality 协议目标网站检测工具，用于评估网站是否适合作为Reality协议的目标域名。
 
 [V2RaySSR综合网](https://v2rayssr.com)
 
@@ -39,12 +23,12 @@
 以下是一个批量检测的实际输出示例：
 
 ```bash
-./reality-checker csv file.csv
+./reality-scout csv file.csv
 ```
 
 **实际运行效果：**
 
-![RealityChecker检测结果示例](RealityChecker.png)
+![RealityScout检测结果示例](RealityChecker.png)
 
 **只有满足Reality目标域名硬性条件的（TLS1.3、X25519、H2、SNI匹配、证书有效），才会在列表中显示**
 
@@ -80,40 +64,40 @@
 
 **方法1：直接下载（推荐）**
 
-从 [Releases](https://github.com/bobvhfhh/RealityChecker-custom-complete/releases) 页面下载对应架构的zip文件：
+从 [Releases](https://github.com/bobvhfhh/RealityScout/releases) 页面下载对应架构的zip文件：
 
 ```bash
 # Linux x86_64
-wget https://github.com/bobvhfhh/RealityChecker-custom-complete/releases/latest/download/reality-checker-linux-amd64.zip
+wget https://github.com/bobvhfhh/RealityScout/releases/latest/download/reality-scout-linux-amd64.zip
 
 # Linux ARM64
-wget https://github.com/bobvhfhh/RealityChecker-custom-complete/releases/latest/download/reality-checker-linux-arm64.zip
+wget https://github.com/bobvhfhh/RealityScout/releases/latest/download/reality-scout-linux-arm64.zip
 ```
 
 解压后直接使用：
 ```bash
 # 解压
-unzip reality-checker-linux-amd64.zip
+unzip reality-scout-linux-amd64.zip
 
 # 添加执行权限
-chmod +x reality-checker
+chmod +x reality-scout
 
 # 开始检测
-./reality-checker check <域名>
+./reality-scout check <域名>
 ```
 
 **方法2：本地编译**
 
 ```bash
 # 克隆项目
-git clone https://github.com/bobvhfhh/RealityChecker-custom-complete.git
-cd RealityChecker
+git clone https://github.com/bobvhfhh/RealityScout.git
+cd RealityScout
 
 # 编译程序
-go build -o reality-checker
+go build -o reality-scout
 
 # 开始检测
-./reality-checker check <域名>
+./reality-scout check <域名>
 ```
 
 ## 🔍 使用示例
@@ -122,21 +106,21 @@ go build -o reality-checker
 
 ```bash
 # 基础检测
-./reality-checker check apple.com
+./reality-scout check apple.com
 ```
 
 ### 批量检测
 
 ```bash
 # 批量检测多个域名（空格分隔）
-./reality-checker batch apple.com tesla.com microsoft.com
+./reality-scout batch apple.com tesla.com microsoft.com
 ```
 
 ### CSV文件检测
 
 ```bash
 # 从CSV文件批量检测域名
-./reality-checker csv file.csv
+./reality-scout csv file.csv
 ```
 
 ### 推荐工作流程
@@ -150,16 +134,10 @@ go build -o reality-checker
 
 **2. 使用本工具检测生成的CSV文件：**
 ```bash
-./reality-checker csv file.csv
+./reality-scout csv file.csv
 ```
 
-**二改版本提示：**
-- 本版本可直接读取 RealiTLScanner 原始 CSV，不需要把 CERT_DOMAIN 移到第三列。
-- 对异常 CSV 行会显示自动修复和跳过数量。
-- RealiTLScanner 尽量在本地运行，不要在远端。
-- 多次运行时请更改输出文件名，如：`file1.csv`、`file2.csv`、`file3.csv` 等。
-
-**原项目提示：**
+**重要提示：**
 - RealiTLScanner 尽量在本地运行，不要在远端
 - 多次运行RealiTLScanner时，请更改输出文件名，如：`file1.csv`、`file2.csv`、`file3.csv` 等
 - 如果使用相同的文件名，可能会导致文件导出失败或覆盖之前的扫描结果
@@ -168,10 +146,10 @@ go build -o reality-checker
 
 ```bash
 # 显示使用说明
-./reality-checker
+./reality-scout
 
 # 查看版本信息
-./reality-checker version
+./reality-scout version
 ```
 
 ## 🔧常见问题
@@ -182,8 +160,8 @@ go build -o reality-checker
 
 - [Country.mmdb](https://github.com/Loyalsoldier/geoip/releases/latest/download/Country.mmdb)
 - [gfwlist.conf](https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/gfw.txt)
-- [cdn_keywords.txt](https://raw.githubusercontent.com/V2RaySSR/RealityChecker/main/data/cdn_keywords.txt)
-- [hot_websites.txt](https://raw.githubusercontent.com/V2RaySSR/RealityChecker/main/data/hot_websites.txt)
+- [cdn_keywords.txt](https://raw.githubusercontent.com/bobvhfhh/RealityScout/main/data/cdn_keywords.txt)
+- [hot_websites.txt](https://raw.githubusercontent.com/bobvhfhh/RealityScout/main/data/hot_websites.txt)
 
 
 ## 🏆 致谢

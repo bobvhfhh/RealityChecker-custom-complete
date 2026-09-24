@@ -8,11 +8,11 @@ import (
 	"strings"
 	"syscall"
 
-	"RealityChecker/internal/batch"
-	"RealityChecker/internal/config"
-	"RealityChecker/internal/core"
-	"RealityChecker/internal/ui"
-	"RealityChecker/internal/version"
+	"RealityScout/internal/batch"
+	"RealityScout/internal/config"
+	"RealityScout/internal/core"
+	"RealityScout/internal/ui"
+	"RealityScout/internal/version"
 )
 
 // RootCmd 根命令结构
@@ -75,8 +75,8 @@ func (r *RootCmd) Execute() {
 		if len(os.Args) < 3 {
 			ui.PrintErrorWithDetails(
 				"错误：缺少域名参数",
-				"用法: reality-checker check <domain>",
-				"示例: reality-checker check apple.com",
+				"用法: reality-scout check <domain>",
+				"示例: reality-scout check apple.com",
 			)
 			os.Exit(1)
 		}
@@ -85,8 +85,8 @@ func (r *RootCmd) Execute() {
 		if len(os.Args) < 3 {
 			ui.PrintErrorWithDetails(
 				"错误：缺少域名参数",
-				"用法: reality-checker batch <domain1> <domain2> <domain3> ...",
-				"示例: reality-checker batch apple.com google.com microsoft.com",
+				"用法: reality-scout batch <domain1> <domain2> <domain3> ...",
+				"示例: reality-scout batch apple.com google.com microsoft.com",
 			)
 			os.Exit(1)
 		}
@@ -97,8 +97,8 @@ func (r *RootCmd) Execute() {
 		if len(os.Args) < 3 {
 			ui.PrintErrorWithDetails(
 				"错误：缺少CSV文件参数",
-				"用法: reality-checker csv <csv_file>",
-				"示例: reality-checker csv domains.csv",
+				"用法: reality-scout csv <csv_file>",
+				"示例: reality-scout csv domains.csv",
 			)
 			os.Exit(1)
 		}
@@ -116,11 +116,11 @@ func (r *RootCmd) Execute() {
 
 // showVersion 显示版本信息
 func (r *RootCmd) showVersion() {
-	fmt.Printf("Reality协议目标网站检测工具\n")
+	fmt.Printf("Reality 协议目标网站检测工具\n")
 	fmt.Printf("版本: %s\n", version.GetVersion())
 	fmt.Printf("提交: %s\n", version.GetCommit())
 	fmt.Printf("构建时间: %s\n", version.GetBuildTime())
-	fmt.Printf("GitHub: https://github.com/V2RaySSR/RealityChecker\n")
+	fmt.Printf("GitHub: https://github.com/bobvhfhh/RealityScout\n")
 }
 
 // cleanup 清理资源
